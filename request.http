@@ -1,0 +1,7 @@
+GET http://localhost:8080/1234?q=123&f=456 HTTP/1.1
+
+{
+  "some": "data",
+}
+# GET https://app.apitoolkit.io/api/client_metadata HTTP/1.1
+# Authorization: "Bearer x6NILZAfaSkzm9FLhqZsTz9K9DjDR9Oeu7681uVWoD5b9YjD"
