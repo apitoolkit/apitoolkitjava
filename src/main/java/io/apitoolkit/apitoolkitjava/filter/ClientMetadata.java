@@ -8,34 +8,46 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 public class ClientMetadata {
   @JsonAlias("project_id")
   public String project_id;
+
   @JsonAlias("pubsub_project_id")
-  private String pubsubProjectId;
+  private String pubsub_project_id;
+
+  @JsonAlias("topic_id")
+  private String topic_id;
+
+  @JsonAlias("pubsub_push_service_account")
+  private Map<String, String> pubsub_push_service_account;
+
+
   public String getProject_id() {
     return project_id;
   }
+
   public void setProject_id(String project_id) {
     this.project_id = project_id;
   }
-  public String getPubsubProjectId() {
-    return pubsubProjectId;
+
+  public String getPubsub_project_id() {
+    return pubsub_project_id;
   }
-  public void setPubsubProjectId(String pubsubProjectId) {
-    this.pubsubProjectId = pubsubProjectId;
+
+  public void setPubsub_project_id(String pubsubProjectId) {
+    this.pubsub_project_id = pubsubProjectId;
   }
-  public String getTopicID() {
-    return topicID;
+
+  public String getTopic_id() {
+    return topic_id;
   }
-  public void setTopicID(String topicID) {
-    this.topicID = topicID;
+
+  public void setTopic_id(String topicID) {
+    this.topic_id = topicID;
   }
-  public Map<String, String> getPubsubPushServiceAccount() {
-    return pubsubPushServiceAccount;
+
+  public Map<String, String> getPubsub_push_service_account() {
+    return pubsub_push_service_account;
   }
-  public void setPubsubPushServiceAccount(Map<String, String> pubsubPushServiceAccount) {
-    this.pubsubPushServiceAccount = pubsubPushServiceAccount;
+
+  public void setPubsub_push_service_account(Map<String, String> pubsubPushServiceAccount) {
+    this.pubsub_push_service_account = pubsubPushServiceAccount;
   }
-  @JsonAlias("topic_id")
-  private String topicID;
-  @JsonAlias("pubsub_push_service_account")
-  private Map<String, String> pubsubPushServiceAccount ;
 }
