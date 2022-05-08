@@ -1,35 +1,42 @@
 package io.apitoolkit.apitoolkitjava.filter;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ApitoolkitPayload {
+  private Base64.Encoder encoder = Base64.getEncoder();
+
   /// nano seconds
-  private long Duration;
+  private long Duration = -1;
   // domain name
-  private String Host;
-  private String Method;
+  private String Host = "";
+  private String Method = "";
   // localhost/product/:product_id/ {product_id, 1234-1234}
+  @JsonProperty("path_params")
   private Map<String, String> PathParams;
   // from apitoolkit using the api key
-  private String ProjectID; 
+  private String ProjectID = ""; 
   private Integer ProtoMajor = 1;
   private Integer ProtoMinor = 1;
   // locahost/product?product_id=1234-1234
   private Map<String, List<String>> QueryParams; 
   // complete url with param values
-  private String RawURL;
+  private String RawURL = "";
   // referer from the request
-  private String Referer;
+  private String Referer = "";
   // request body
-  private String RequestBody;
+  private String RequestBody = "";
   private Map<String, List<String>> RequestHeaders;
-  private String ResponseBody;
+  private String ResponseBody = "";
   private Map<String, List<String>> ResponseHeaders;
   private String SdkType = "JavaSpringBoot"; // TODO: replace with created
-  private Integer StatusCode;
-  private String Timestamp;
-  private String URLPath;
+  private Integer StatusCode = -1;
+  private String Timestamp = "2022/05/08";
+  private String UrlPath = "";
   
   public ApitoolkitPayload(Integer duration, String host, String method, Map<String, String> pathParams,
       String projectID, Integer protoMajor, Integer protoMinor, Map<String, List<String>> queryParams, String rawURL,
@@ -52,17 +59,17 @@ public class ApitoolkitPayload {
     SdkType = sdkType;
     StatusCode = statusCode;
     Timestamp = timestamp;
-    URLPath = uRLPath;
+    UrlPath = uRLPath;
   }
 
   @Override
   public String toString() {
-    return "ApitoolkitPayload [Duration=" + Duration + ", Host=" + Host + ", Method=" + Method + ", PathParams="
-        + PathParams + ", ProjectID=" + ProjectID + ", ProtoMajor=" + ProtoMajor + ", ProtoMinor=" + ProtoMinor
-        + ", QueryParams=" + QueryParams + ", RawURL=" + RawURL + ", Referer=" + Referer + ", RequestBody="
-        + RequestBody + ", RequestHeaders=" + RequestHeaders + ", ResponseBody=" + ResponseBody + ", ResponseHeaders="
-        + ResponseHeaders + ", SdkType=" + SdkType + ", StatusCode=" + StatusCode + ", Timestamp=" + Timestamp
-        + ", URLPath=" + URLPath + "]";
+    return "ApitoolkitPayload [\nDuration=" + Duration + ", \nHost=" + Host + ", \nMethod=" + Method + ", \nPathParams="
+        + PathParams + ", \nProjectID=" + ProjectID + ", \nProtoMajor=" + ProtoMajor + ", \nProtoMinor=" + ProtoMinor
+        + ", \nQueryParams=" + QueryParams + ", \nRawURL=" + RawURL + ", \nReferer=" + Referer + ", \nRequestBody="
+        + RequestBody + ", \nRequestHeaders=" + RequestHeaders + ", \nResponseBody=" + ResponseBody + ", \nResponseHeaders="
+        + ResponseHeaders + ", \nSdkType=" + SdkType + ", \nStatusCode=" + StatusCode + ", \nTimestamp=" + Timestamp
+        + ", \nURLPath=" + UrlPath + "]";
   }
 
   public ApitoolkitPayload() {
@@ -153,7 +160,7 @@ public class ApitoolkitPayload {
   }
 
   public void setRequestBody(String requestBody) {
-    RequestBody = requestBody;
+    RequestBody = encoder.encodeToString(requestBody.getBytes());;
   }
 
   public Map<String, List<String>> getRequestHeaders() {
@@ -169,7 +176,7 @@ public class ApitoolkitPayload {
   }
 
   public void setResponseBody(String responseBody) {
-    ResponseBody = responseBody;
+    ResponseBody = encoder.encodeToString(responseBody.getBytes());
   }
 
   public Map<String, List<String>> getResponseHeaders() {
@@ -204,12 +211,12 @@ public class ApitoolkitPayload {
     Timestamp = timestamp;
   }
 
-  public String getURLPath() {
-    return URLPath;
+  public String getUrlPath() {
+    return UrlPath;
   }
 
-  public void setURLPath(String uRLPath) {
-    URLPath = uRLPath;
+  public void setUrlPath(String uRLPath) {
+    UrlPath = uRLPath;
   }
 
   
