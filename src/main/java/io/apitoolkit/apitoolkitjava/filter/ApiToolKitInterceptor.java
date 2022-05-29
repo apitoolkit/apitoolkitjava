@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.WebRequestInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.WebRequestHandlerInterceptorAdapter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -85,10 +86,8 @@ public class ApiToolKitInterceptor extends WebRequestHandlerInterceptorAdapter {
 		var before = new Date();
 		var beforeMilli = before.getTime();
 
-		// TODO: get the response body
-		payload.setResponseBody("");
-		// String responseBody = response.getReader().lines().reduce("", String::concat);
-		// payload.setResponseBody(responseBody);
+		payload.setResponseBody(getBody(response));
+		
 		// TODO: get the url path
 		payload.setResponseHeaders(getResponseHeaders(response));
 		payload.setStatusCode(response.getStatus());
@@ -100,6 +99,13 @@ public class ApiToolKitInterceptor extends WebRequestHandlerInterceptorAdapter {
 		payload.setDuration(duration * 1000000);
 
 		return payload;
+	}
+
+	private String getBody(HttpServletResponse response) throws IOException {
+		ContentCachingResponseWrapper wrapper =  (ContentCachingResponseWrapper) response;
+		String s = new String(wrapper.getContentAsByteArray(),wrapper.getCharacterEncoding());
+		wrapper.copyBodyToResponse();
+		return s;
 	}
 
 	private Map<String, List<String>> getRequestHeaders(HttpServletRequest request) {
