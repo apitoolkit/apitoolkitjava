@@ -4,7 +4,6 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ApitoolkitPayload {
@@ -33,7 +32,7 @@ public class ApitoolkitPayload {
   private Map<String, List<String>> RequestHeaders;
   private String ResponseBody = "";
   private Map<String, List<String>> ResponseHeaders;
-  private String SdkType = "JavaSpringBoot"; // TODO: replace with created
+  private String SdkType = "JavaSpringBoot";
   private Integer StatusCode = -1;
   private String Timestamp = "2022/05/08";
   private String UrlPath = "";

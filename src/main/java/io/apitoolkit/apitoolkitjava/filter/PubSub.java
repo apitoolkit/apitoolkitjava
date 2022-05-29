@@ -36,6 +36,7 @@ public class PubSub {
   private static String projectId = "";
   private static String topicId = "";
   private static String APITOOLKIT_API_KEY = "";
+  private Publisher publisher = null;
 
   public PubSub(@Value("${apitoolkit.apiKey}") String apiKey) {
     APITOOLKIT_API_KEY = apiKey;
@@ -44,7 +45,28 @@ public class PubSub {
 
     projectId = metadata.getProject_id();
     topicId = metadata.getTopic_id();
-    System.out.println("data: " + metadata.getPubsub_push_service_account());
+    // System.out.println("data: " + metadata.getPubsub_push_service_account());
+    setupPublisher();
+
+  }
+
+  private void setupPublisher() {
+    // PUBSUB configuration
+    TopicName topicName = TopicName.of(metadata.getPubsub_project_id(), topicId);
+    // Publisher publisher = null;
+    try {
+      var sa = metadata.getPubsub_push_service_account();
+      ObjectMapper ob = new ObjectMapper();
+      var json = ob.writeValueAsString(sa);
+      InputStream stream = new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8")));
+
+      publisher = Publisher.newBuilder(topicName)
+          .setCredentialsProvider(FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(stream)))
+          .build();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   public String getProjectID() {
@@ -74,26 +96,10 @@ public class PubSub {
   }
 
   public void publishWithErrorHandler(String message) throws IOException, InterruptedException {
-    System.out.println("projectid: " + metadata.getPubsub_project_id() + " topicID: " + topicId);
-    TopicName topicName = TopicName.of(metadata.getPubsub_project_id(), topicId);
-    Publisher publisher = null;
+    // System.out.println("projectid: " + metadata.getPubsub_project_id() + "
+    // topicID: " + topicId);
 
     try {
-      // TODO: refactor initialization of publisher
-      // Create a publisher instance with default settings bound to the topic
-
-      var sa = metadata.getPubsub_push_service_account();
-      ObjectMapper ob = new ObjectMapper();
-      var json = ob.writeValueAsString(sa);
-      InputStream stream = new ByteArrayInputStream(json.getBytes(Charset.forName("UTF-8")));
-
-      publisher = Publisher.newBuilder(topicName)
-          .setCredentialsProvider(FixedCredentialsProvider.create(ServiceAccountCredentials.fromStream(stream)))
-          .build();
-
-      // List<String> messages = Arrays.asList(message);
-
-      // for (final String message : messages) {
       ByteString data = ByteString.copyFromUtf8(message);
       PubsubMessage pubsubMessage = PubsubMessage.newBuilder().setData(data).build();
 
@@ -111,10 +117,10 @@ public class PubSub {
               if (throwable instanceof ApiException) {
                 ApiException apiException = ((ApiException) throwable);
                 // details on the API exception
-                System.out.println(apiException.getStatusCode().getCode());
-                System.out.println(apiException.isRetryable());
+                // System.out.println(apiException.getStatusCode().getCode());
+                // System.out.println(apiException.isRetryable());
               }
-              System.out.println("Error publishing message : " + message);
+              // System.out.println("Error publishing message : " + message);
             }
 
             @Override
@@ -127,13 +133,6 @@ public class PubSub {
       // }
     } catch (Exception e) {
       System.out.println(e.getMessage());
-    } finally {
-      System.out.println("completed sending message");
-      if (publisher != null) {
-        // When finished with the publisher, shutdown to free up resources.
-        publisher.shutdown();
-        publisher.awaitTermination(1, TimeUnit.MINUTES);
-      }
     }
   }
 }
